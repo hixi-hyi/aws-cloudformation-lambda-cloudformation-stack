@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  Date:
+    Type: String
+Resources:
+  Stack:
+    Type: Custom::Lambda
+    Properties:
+      ServiceToken: !ImportValue cfn-lambda-cloudformation-stack:LambdaArn
+      TemplateURL:
+        Fn::Join:
+          - ""
+          - - "https://"
+            - !ImportValue cfn-lambda-s3:DomainName
+            - "/demo/cloudformation-stack/resource.yaml"
+      Parameters:
+        Name: "test"
+        Value: 1
+      Capabilities:
+        - CAPABILITY_IAM
+      DeployAlways: !Ref Date
+Outputs:
+  OutputName:
+    Value: !GetAtt Stack.Outputs.OutputName
+  OutputValue:
+    Value: !GetAtt Stack.Outputs.OutputValue
+
